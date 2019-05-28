@@ -1,0 +1,66 @@
+{
+  "name": "qv_system",
+  "version": "1.0.0",
+  "description": "Quadratic Voting on the Ethereum Blockchain via a Smart Contract",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "lint": "solium -d contracts",
+    "prettier": "prettier --write **/*.sol",
+    "lintfix": "npm run lint -- --fix",
+    "cover": "solidity-coverage",
+    "test": "truffle test",
+    "migrate": "truffle migrate",
+    "coverage": "./node_modules/.bin/solidity-coverage",
+    "network:run": "ganache-cli --networkId 50 -p 8545 -m \"spike whip cancel pottery blade crane tomato flower ginger acid lava company\"",
+    "blockchain:restart": "npm run blockchain:stop && npm run blockchain:start",
+    "blockchain:start": "npm run network:run >> logs/ganache.log 2>&1 &",
+    "blockchain:stop": "pkill -9 -f ganache-cli || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreiD/qv_voting"
+  },
+  "dependencies": {
+    "@0x/abi-gen": "^2.0.9",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
+    "ethereumjs-wallet": "^0.6.0",
+    "ganache-cli": "^6.1.8",
+    "openzeppelin-solidity": "^2.3.0",
+    "solc": "0.5.5",
+    "solidity-coverage": "^0.5.4",
+    "solium": "^1.1.7",
+    "truffle": "^4.1.13",
+    "truffle-contract": "^4.0.11",
+    "truffle-hdwallet-provider": "1.0.5",
+    "truffle-privatekey-provider": "^1.1.0",
+    "web3": "1.0.0-beta.48"
+  },
+  "keywords": [
+    "QV Voting",
+    "Quadratic Voting",
+    "Solidity",
+    "Job Board",
+    "Contract",
+    "dApp",
+    "Blockchain",
+    "Web3"
+  ],
+  "author": {
+    "name": "Andy",
+    "email": "andyoctavian@protonmail.com",
+    "url": "https://github.com/AndreiD/qv_voting"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AndreiD/qv_voting/issues"
+  },
+  "homepage": "https://github.com/AndreiD/qv_voting#readme",
+  "readme": "https://github.com/AndreiD/qv_voting/blob/master/README.md",
+  "devDependencies": {
+    "prettier": "^1.17.1",
+    "prettier-plugin-solidity": "^1.0.0-alpha.22"
+  }
+}
