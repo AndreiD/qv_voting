@@ -55,5 +55,11 @@ Based on market principles, each voter is endowed with a budget of “voice cred
 
 The quadratic nature of the voting means that a voter can use his or her votes more efficiently spread across many issues. For example, a voter with a budget of 16 vote credits can apply 1 vote credit to each of 16 issues. However, if they feel strongly about a single issue, they can apply 4 votes at the cost of 16 credits to a single issue. This will use their entire budget. This also means there is a large incentive to buy and sell votes, although using a strictly secret ballot gives some protection against vote buying as the purchase cannot be verified.
 
+## Contributing
 
-### License: MIT
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
