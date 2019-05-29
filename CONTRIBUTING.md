@@ -1,4 +1,4 @@
-Contributing    {#contributing}
+Contributing
 ============
 
 Want to contribute? Great! First, read this page (including the small print at
@@ -20,4 +20,3 @@ Some tips for good pull requests:
   (`git rebase -i`) such that your PR is a single commit on top of the current
   HEAD. This make reviewing the code so much easier, and our history more
   readable.
-
