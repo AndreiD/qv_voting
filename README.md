@@ -2,8 +2,15 @@
 
 ### QV Voting on the Ethereum Blockchain via a Smart Contract
 
-###
+Fell free to use this repository for your PhD thessis, master etc. The code is free as in beer, and I require no attribution.
 
+### Quick Overview
+
+<img alt="Quadratic Voting with Smart Contracts Overview Image" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_1.jpeg"/>
+
+### Process
+
+<img alt="Quadratic Voting with Smart Contracts Overview Image 2" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_2.jpeg"/>
 
 ### Learn more about QV Voting
 
@@ -12,7 +19,7 @@ mechanism is subject to the “tiranny of the majority” and therefore may give
 Consider for instance a minority that care much more intensely about getting a public good
 (e.g. a road or a anti-discrimination law) than the majority does for the opposite outcome.
 With the use of a simple majoritarian rule it might be the case that the losses caused to the
-majority are greater than the benefits provided to the majority, an inefficient outcome from an 
+majority are greater than the benefits provided to the majority, an inefficient outcome from an
 utilitarian point of view. More generally, take a binary collective decision with a distribution of
 preferences such that preferring one of the choices is represented by a positive valuation whereas
 preferring the complementary choice is represented by a negative valuation. A majority voting
