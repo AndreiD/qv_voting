@@ -11,13 +11,14 @@ Notice in the picture below that to cast 5 votes you have to spend 25 Credits.
 <img alt="Quadratic Voting with Smart Contracts Overview Image" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_1.jpeg"/>
 
 So 1 credit gives you 1 vote, 4 credits gives you 2 votes, 9 credits - 3 votes and so on.
-Why is this important ? Read on!
+Why is this important ? Checkout the <a href="https://github.com/AndreiD/qv_voting#learn-more-about-qv-voting">explanation section</a>
 
 ### Process
 
 Usually a KYC (or by using some electronic SSN, employees id etc), each person is give PERIODICALLY a number of tokens. They can keep it, or spend it to vote for the issues they care about.
+Everything is tracked at blockchain level (usually a private one).
 
-<img alt="Quadratic Voting with Smart Contracts Overview Image 2" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_2.jpeg"/>
+<img alt="Quadratic Voting with Smart Contracts Overview Image 2" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_2.jpeg"/> Picture by https://twitter.com/eximchainexc?lang=en
 
 ### Learn more about QV Voting
 
