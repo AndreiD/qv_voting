@@ -2,13 +2,20 @@
 
 ### QV Voting on the Ethereum Blockchain via a Smart Contract
 
-Fell free to use this repository for your PhD thessis, master etc. The code is free as in beer, and I require no attribution.
+Fell free to use this repository for anything you want. The code is free as in beer, and I require no attribution. I highly appreciate suggestions and you can contact me via the <a href="https://github.com/AndreiD/qv_voting/issues">issues page</a>
 
 ### Quick Overview
 
+Notice in the picture below that to cast 5 votes you have to spend 25 Credits.
+
 <img alt="Quadratic Voting with Smart Contracts Overview Image" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_1.jpeg"/>
 
+So 1 credit gives you 1 vote, 4 credits gives you 2 votes, 9 credits - 3 votes and so on.
+Why is this important ? Read on!
+
 ### Process
+
+Usually a KYC (or by using some electronic SSN, employees id etc), each person is give PERIODICALLY a number of tokens. They can keep it, or spend it to vote for the issues they care about.
 
 <img alt="Quadratic Voting with Smart Contracts Overview Image 2" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_2.jpeg"/>
 
