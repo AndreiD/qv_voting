@@ -1,26 +1,27 @@
 pragma solidity >=0.4.25 <0.6.0;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract QVVoting {
+contract QVVoting is Ownable {
     using SafeMath for uint256;
 
-    event voteCasted(address voter, uint ProposalID, bool vote, uint weight);
+    event voteCasted(address voter, uint ProposalID, bool vote, uint256 weight);
     event ProposalCreated(
         address creator,
-        uint ProposalID,
+        uint256 ProposalID,
         string description,
         uint votingTimeInHours
     );
     event ProposalStatusUpdate(bool status);
 
-    enum ProposalStatus {IN_PROGRESS, TALLY}
+    enum ProposalStatus {IN_PROGRESS, TALLY, ENDED}
 
     struct Proposal {
         address creator;
         ProposalStatus status;
-        uint yesVotes;
-        uint noVotes;
+        uint256 yesVotes;
+        uint256 noVotes;
         string description;
         address[] voters;
         uint expirationTime;
@@ -30,16 +31,16 @@ contract QVVoting {
     struct Voter {
         bool hasVoted;
         bool vote;
-        uint weight;
+        uint256 weight;
     }
 
     struct TokenManager {
-        uint tokenBalance;
-        mapping(uint => uint) lockedTokens;
-        uint[] participatedProposals;
+        uint256 tokenBalance;
+        mapping(uint256 => uint256) lockedTokens;
+        uint256[] participatedProposals;
     }
 
-    mapping(uint => Proposal) public Proposals;
+    mapping(uint256 => Proposal) public Proposals;
     mapping(address => TokenManager) public bank;
     uint public ProposalCount;
 
@@ -47,13 +48,13 @@ contract QVVoting {
         string calldata _description,
         uint _voteExpirationTime
     ) external returns (uint) {
-        require(_voteExpirationTime > 0, "the voting period cannot be 0");
+        require(_voteExpirationTime > 0, "The voting period cannot be 0");
         ProposalCount++;
 
         Proposal storage curProposal = Proposals[ProposalCount];
         curProposal.creator = msg.sender;
         curProposal.status = ProposalStatus.IN_PROGRESS;
-        curProposal.expirationTime = now + 60 * 60 * _voteExpirationTime * 1 seconds;
+        curProposal.expirationTime = now + 60 * _voteExpirationTime * 1 seconds; // in minutes
         curProposal.description = _description;
 
         emit ProposalCreated(
@@ -65,11 +66,11 @@ contract QVVoting {
         return ProposalCount;
     }
 
-    function endProposal(uint _ProposalID) external validProposal(_ProposalID) {
-        require(
-            msg.sender == Proposals[_ProposalID].creator,
-            "voter is not the creator of the Proposal"
-        );
+    function setProposalToTally(uint _ProposalID)
+        external
+        validProposal(_ProposalID)
+        onlyOwner
+    {
         require(
             Proposals[_ProposalID].status == ProposalStatus.IN_PROGRESS,
             "Vote is not in progress"
@@ -79,6 +80,22 @@ contract QVVoting {
             "voting period has not expired"
         );
         Proposals[_ProposalID].status = ProposalStatus.TALLY;
+    }
+
+    function setProposalToEnded(uint _ProposalID)
+        external
+        validProposal(_ProposalID)
+        onlyOwner
+    {
+        require(
+            Proposals[_ProposalID].status == ProposalStatus.TALLY,
+            "Proposal should be in tally"
+        );
+        require(
+            now >= getProposalExpirationTime(_ProposalID),
+            "voting period has not expired"
+        );
+        Proposals[_ProposalID].status = ProposalStatus.ENDED;
     }
 
     function getProposalStatus(uint _ProposalID)
@@ -99,14 +116,6 @@ contract QVVoting {
         return Proposals[_ProposalID].expirationTime;
     }
 
-    function getProposalHistory(address _voter)
-        public
-        view
-        returns (uint[] memory)
-    {
-        return bank[_voter].participatedProposals;
-    }
-
     modifier validProposal(uint _ProposalID) {
         require(
             _ProposalID > 0 && _ProposalID <= ProposalCount,
@@ -125,19 +134,28 @@ contract QVVoting {
         return Proposals[_ProposalID].voters;
     }
 
-    function countVotes(
-        uint _ProposalID,
-        uint[] memory _votes,
-        uint[] memory _weights
-    ) public pure returns (uint, uint, uint) {
-        require(_votes.length == _weights.length);
-        uint yesVotes;
-        uint noVotes;
-        for (uint i = 0; i < _votes.length; i++) {
-            if (_votes[i] == 0) noVotes += _weights[i];
-            else if (_votes[i] == 1) yesVotes += _weights[i];
+    function countVotes(uint256 _ProposalID)
+        public
+        view
+        returns (uint, uint, uint)
+    {
+        uint yesVotes = 0;
+        uint noVotes = 0;
+
+        address[] memory voters = Proposals[_ProposalID].voters;
+        for (uint i = 0; i < voters.length; i++) {
+            address voter = voters[i];
+            bool vote = Proposals[_ProposalID].voterInfo[voter].vote;
+            uint256 weight = Proposals[_ProposalID].voterInfo[voter].weight;
+            if (vote == true) {
+                yesVotes += weight;
+            } else {
+                noVotes += weight;
+            }
         }
+
         return (_ProposalID, yesVotes, noVotes);
+
     }
 
     function voterHasVoted(uint _ProposalID, address _voter)
@@ -149,69 +167,32 @@ contract QVVoting {
         return (Proposals[_ProposalID].voterInfo[_voter].hasVoted);
     }
 
-    function getTokenSubmitted(address _voter) public view returns (uint) {
-        return bank[_voter].tokenBalance;
-    }
-
-    function sqrt(uint x) public pure returns (uint y) {
-        uint z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
-        }
-    }
-
-    /*
-   * Gets the status of a proposal.
-   */
-    function getproposalStatus(uint _proposalID)
-        public
-        view
-        validProposal(_proposalID)
-        returns (ProposalStatus)
-    {
-        return Proposals[_proposalID].status;
-    }
-
-    /*
-   * Gets the expiration date of a proposal.
-   */
-    function getproposalExpirationTime(uint _proposalID)
-        public
-        view
-        validProposal(_proposalID)
-        returns (uint)
-    {
-        return Proposals[_proposalID].expirationTime;
-    }
-
     function getVotersForproposal(uint _proposalID)
         public
         view
         validProposal(_proposalID)
         returns (address[] memory)
     {
-        require(getproposalStatus(_proposalID) != ProposalStatus.IN_PROGRESS);
+        require(getProposalStatus(_proposalID) != ProposalStatus.IN_PROGRESS);
         return Proposals[_proposalID].voters;
     }
 
     /*
    * Casts a vote for a given proposal.
    */
-    function castVote(uint _proposalID, uint numTokens, bool one_or_zero)
+    function castVote(uint _proposalID, uint numTokens, bool _vote)
         external
         validProposal(_proposalID)
     {
         require(
-            getproposalStatus(_proposalID) == ProposalStatus.IN_PROGRESS,
+            getProposalStatus(_proposalID) == ProposalStatus.IN_PROGRESS,
             "proposal has expired."
         );
         require(
             !userHasVoted(_proposalID, msg.sender),
             "User has already voted."
         );
-        require(getproposalExpirationTime(_proposalID) > now);
+        require(getProposalExpirationTime(_proposalID) > now);
 
         uint256 weight = sqrt(numTokens); // QV Vote
         // update token bank
@@ -222,13 +203,13 @@ contract QVVoting {
 
         curproposal.voterInfo[msg.sender] = Voter({
             hasVoted: true,
-            vote: one_or_zero,
+            vote: _vote,
             weight: weight
         });
 
         curproposal.voters.push(msg.sender);
 
-        emit voteCasted(msg.sender, _proposalID, one_or_zero, weight);
+        emit voteCasted(msg.sender, _proposalID, _vote, weight);
     }
 
     /*
@@ -243,11 +224,12 @@ contract QVVoting {
         return (Proposals[_proposalID].voterInfo[_user].hasVoted);
     }
 
-    /*
-   * Gets the amount of Voting Credits for a given voter.
-   */
-    function getTokenStake(address _voter) public view returns (uint) {
-        return bank[_voter].tokenBalance;
+    function sqrt(uint x) internal pure returns (uint y) {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
     }
-
 }

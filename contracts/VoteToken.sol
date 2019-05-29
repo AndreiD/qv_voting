@@ -23,7 +23,7 @@ contract VoteToken is Ownable, MinterRole {
         symbol = "VOTE";
         name = "Voting Token";
         qv_contract = QVVoting(_voting_contract);
-        _mint(msg.sender, 1000000000000000); // adds some starting tokens
+        mint(msg.sender, 1000000000000000); // adds some starting tokens
     }
 
     // amount is the voice credits, vote is true: yes, false: no
@@ -41,9 +41,21 @@ contract VoteToken is Ownable, MinterRole {
         return true;
     }
 
+    // Transfer the balance from owner's account to another account
+    function transfer(address to, uint tokens)
+        public
+        onlyOwner
+        returns (bool success)
+    {
+        _balances[msg.sender] = _balances[msg.sender].sub(tokens);
+        _balances[to] = _balances[to].add(tokens);
+        emit Transfer(msg.sender, to, tokens);
+        return true;
+    }
+
     // used to mint more voting tokens by the owner
-    function _mint(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: mint to the zero address");
+    function mint(address account, uint256 amount) public onlyOwner {
+        require(account != address(0), " mint to the zero address");
         _totalSupply = _totalSupply.add(amount);
         _balances[account] = _balances[account].add(amount);
     }
