@@ -10,6 +10,8 @@ Notice in the picture below that to cast 5 votes you have to spend 25 Credits.
 
 <img alt="Quadratic Voting with Smart Contracts Overview Image" src="https://raw.githubusercontent.com/AndreiD/qv_voting/master/assets/qv_1.jpeg"/>
 
+from Radical Markets: Uprooting Capitalism and Democracy for a Just Society.
+
 So 1 credit gives you 1 vote, 4 credits gives you 2 votes, 9 credits - 3 votes and so on.
 Why is this important ? Checkout the <a href="https://github.com/AndreiD/qv_voting#learn-more-about-qv-voting">explanation section</a>
 
