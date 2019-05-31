@@ -1,8 +1,5 @@
-const JobEscrow = artifacts.require("../contracts/JobEscrow.sol");
-const JobGenerator = artifacts.require("../contracts/JobGenerator.sol");
-
+const QVVoting = artifacts.require("../contracts/QVVoting.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(JobGenerator);
-  deployer.deploy(JobEscrow);
+  deployer.deploy(QVVoting);
 };

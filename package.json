@@ -13,10 +13,7 @@
     "test": "truffle test",
     "migrate": "truffle migrate",
     "coverage": "./node_modules/.bin/solidity-coverage",
-    "network:run": "ganache-cli --networkId 50 -p 8545 -m \"spike whip cancel pottery blade crane tomato flower ginger acid lava company\"",
-    "blockchain:restart": "npm run blockchain:stop && npm run blockchain:start",
-    "blockchain:start": "npm run network:run >> logs/ganache.log 2>&1 &",
-    "blockchain:stop": "pkill -9 -f ganache-cli || true"
+    "ganache": "ganache-cli --networkId 50 -p 8545 -m \"spike whip cancel pottery blade crane tomato flower ginger acid lava company\""
   },
   "repository": {
     "type": "git",
