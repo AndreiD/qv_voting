@@ -2,15 +2,21 @@ pragma solidity >=0.4.25 <0.6.0;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/roles/MinterRole.sol";
 
 /**
  * @title QVVoting
  * @dev the manager for proposals / votes
  */
-contract QVVoting is Ownable {
+contract QVVoting is Ownable, MinterRole {
     using SafeMath for uint256;
 
-    event VoteCasted(address voter, uint ProposalID,uint256 weight);
+    uint256 private _totalSupply;
+    string public symbol;
+    string public name;
+    mapping(address => uint256) private _balances;
+
+    event VoteCasted(address voter, uint ProposalID, uint256 weight);
 
     event ProposalCreated(
         address creator,
@@ -40,6 +46,12 @@ contract QVVoting is Ownable {
 
     mapping(uint256 => Proposal) public Proposals;
     uint public ProposalCount;
+    address voteTokenContract;
+
+    constructor() public {
+        symbol = "QVV";
+        name = "QV Voting";
+    }
 
     /**
     * @dev Creates a new proposal.
@@ -49,7 +61,7 @@ contract QVVoting is Ownable {
     function createProposal(
         string calldata _description,
         uint _voteExpirationTime
-    ) external returns (uint) {
+    ) external onlyOwner returns (uint) {
         require(_voteExpirationTime > 0, "The voting period cannot be 0");
         ProposalCount++;
 
@@ -134,17 +146,11 @@ contract QVVoting is Ownable {
         return Proposals[_ProposalID].expirationTime;
     }
 
-
-
     /**
     * @dev counts the votes for a proposal. Returns (yeays, nays)
     * @param _ProposalID the proposal id
     */
-    function countVotes(uint256 _ProposalID)
-        public
-        view
-        returns (uint, uint)
-    {
+    function countVotes(uint256 _ProposalID) public view returns (uint, uint) {
         uint yesVotes = 0;
         uint noVotes = 0;
 
@@ -164,8 +170,7 @@ contract QVVoting is Ownable {
 
     }
 
-
-   /**
+    /**
     * @dev casts a vote.
     * @param _ProposalID the proposal id
     * @param numTokens number of voice credits
@@ -183,7 +188,12 @@ contract QVVoting is Ownable {
             !userHasVoted(_ProposalID, msg.sender),
             "user already voted on this proposal"
         );
-        require(getProposalExpirationTime(_ProposalID) > now);
+        require(
+            getProposalExpirationTime(_ProposalID) > now,
+            "for this proposal, the voting time expired"
+        );
+
+        _balances[msg.sender] = _balances[msg.sender].sub(numTokens);
 
         uint256 weight = sqrt(numTokens); // QV Vote
 
@@ -214,8 +224,6 @@ contract QVVoting is Ownable {
         return (Proposals[_ProposalID].voterInfo[_user].hasVoted);
     }
 
-
-
     /**
     * @dev checks if a proposal id is valid
     * @param _ProposalID the proposal id
@@ -240,4 +248,21 @@ contract QVVoting is Ownable {
             z = (x / z + z) / 2;
         }
     }
+
+    /**
+    * @dev minting more tokens for an account
+    */
+    function mint(address account, uint256 amount) public onlyOwner {
+        require(account != address(0), " mint to the zero address");
+        _totalSupply = _totalSupply.add(amount);
+        _balances[account] = _balances[account].add(amount);
+    }
+
+    /**
+    * @dev returns the balance of an account
+    */
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }
+
 }
