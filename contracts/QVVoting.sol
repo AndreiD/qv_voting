@@ -46,7 +46,6 @@ contract QVVoting is Ownable, MinterRole {
 
     mapping(uint256 => Proposal) public Proposals;
     uint public ProposalCount;
-    address voteTokenContract;
 
     constructor() public {
         symbol = "QVV";
