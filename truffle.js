@@ -8,7 +8,8 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: "*",
-      gas: 4500000
+      gas: 5500000,
+      from: "0x95915d3457da59f25cfc6f53b7f2056b376943e4"
     },
     rinkeby: {
       provider: new PrivateKeyProvider(rinkebyByPrivateKey, rinkebyProvider),
