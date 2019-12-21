@@ -2,7 +2,7 @@
 
 ### QV Voting on the Ethereum Blockchain via a Smart Contract
 
-Fell free to use this repository for anything you want. The code is free as in beer, and I require no attribution. I highly appreciate suggestions and you can contact me via the <a href="https://github.com/AndreiD/qv_voting/issues">issues page</a>
+Fell free to use this repository for anything you want. The code is free as in beer, and I require no attribution. I highly appreciate suggestions and you can contact me via the <a href="https://github.com/AndreiD/qv_voting/issues">issues page</a>.
 
 ### Quick Overview
 
