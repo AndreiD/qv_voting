@@ -46,11 +46,6 @@
     "Blockchain",
     "Web3"
   ],
-  "author": {
-    "name": "Andy",
-    "email": "andyoctavian@protonmail.com",
-    "url": "https://github.com/AndreiD/qv_voting"
-  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/AndreiD/qv_voting/issues"
