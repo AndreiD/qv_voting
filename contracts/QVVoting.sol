@@ -1,14 +1,14 @@
-pragma solidity >=0.4.25 <0.6.0;
+pragma solidity >0.8.0;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
-import "openzeppelin-solidity/contracts/access/roles/MinterRole.sol";
+import "OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+import "OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
+import "OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol";
 
 /**
  * @title QVVoting
  * @dev the manager for proposals / votes
  */
-contract QVVoting is Ownable, MinterRole {
+contract QVVoting is Ownable, AccessControl {
     using SafeMath for uint256;
 
     uint256 private _totalSupply;
@@ -47,9 +47,9 @@ contract QVVoting is Ownable, MinterRole {
     mapping(uint256 => Proposal) public Proposals;
     uint public ProposalCount;
 
-    constructor() public {
-        symbol = "QVV";
-        name = "QV Voting";
+    constructor(string memory _symbol, string memory _name) {
+        symbol = _symbol;
+        name = _name;
     }
 
     /**
@@ -67,7 +67,7 @@ contract QVVoting is Ownable, MinterRole {
         Proposal storage curProposal = Proposals[ProposalCount];
         curProposal.creator = msg.sender;
         curProposal.status = ProposalStatus.IN_PROGRESS;
-        curProposal.expirationTime = now + 60 * _voteExpirationTime * 1 seconds;
+        curProposal.expirationTime = block.timestamp + 60 * _voteExpirationTime * 1 seconds;
         curProposal.description = _description;
 
         emit ProposalCreated(
@@ -93,7 +93,7 @@ contract QVVoting is Ownable, MinterRole {
             "Vote is not in progress"
         );
         require(
-            now >= getProposalExpirationTime(_ProposalID),
+            block.timestamp >= getProposalExpirationTime(_ProposalID),
             "voting period has not expired"
         );
         Proposals[_ProposalID].status = ProposalStatus.TALLY;
@@ -113,7 +113,7 @@ contract QVVoting is Ownable, MinterRole {
             "Proposal should be in tally"
         );
         require(
-            now >= getProposalExpirationTime(_ProposalID),
+            block.timestamp >= getProposalExpirationTime(_ProposalID),
             "voting period has not expired"
         );
         Proposals[_ProposalID].status = ProposalStatus.ENDED;
@@ -188,7 +188,7 @@ contract QVVoting is Ownable, MinterRole {
             "user already voted on this proposal"
         );
         require(
-            getProposalExpirationTime(_ProposalID) > now,
+            getProposalExpirationTime(_ProposalID) > block.timestamp,
             "for this proposal, the voting time expired"
         );
 
